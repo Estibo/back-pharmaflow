@@ -1,0 +1,22 @@
+# Ignorar archivos de compilación Java
+*.class
+
+# Ignorar directorios de compilación
+/bin/
+/build/
+/target/
+
+# Configuración de IntelliJ IDEA
+.idea/
+*.iml
+
+# Configuración de VSCode
+.vscode/
+
+# Archivos del sistema
+.DS_Store
+Thumbs.db
+
+# Maven
+/logs
+*.log

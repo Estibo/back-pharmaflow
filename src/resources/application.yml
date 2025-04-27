@@ -1,0 +1,30 @@
+server:
+  port: ${SERVER_PORT}
+  address: ${SERVER_ADDRESS}
+
+spring:
+  application:
+    name: pharmaflow
+  profiles:
+    active: ${SPRING_PROFILES_ACTIVE}
+  datasource:
+    username: ${DATASOURCE_USERNAME}
+    password: ${DATASOURCE_PASSWORD}
+    url: ${DATASOURCE_URL}
+    driver-class-name: com.microsoft.sqlserver.jdbc.SQLServerDriver
+  jpa:
+    database-platform: org.hibernate.dialect.SQLServerDialect
+    show-sql: true
+    hibernate:
+      ddl-auto: none
+  output:
+    ansi:
+      enabled: always
+
+jwt:
+  secret:
+    key: ${JWT_SECRET_KEY:pharmaflowSecretKey123}
+
+logging:
+  level:
+    org.hibernate.SQL: debug
