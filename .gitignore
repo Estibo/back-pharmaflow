@@ -1,22 +1,54 @@
-# Ignorar archivos de compilación Java
+# Compiled class files
 *.class
 
-# Ignorar directorios de compilación
-/bin/
-/build/
+# Maven target directory
 /target/
 
-# Configuración de IntelliJ IDEA
+# Build directories
+/build/
+/bin/
+
+# Log files
+*.log
+/logs/
+/*.log
+
+# IntelliJ IDEA
 .idea/
 *.iml
+*.ipr
+*.iws
+out/
 
-# Configuración de VSCode
+# VS Code
 .vscode/
+.history/
 
-# Archivos del sistema
+# OS-specific files
 .DS_Store
 Thumbs.db
 
-# Maven
-/logs
-*.log
+# Environment files
+.env
+
+# Temporary files
+*.tmp
+*.swp
+*.bak
+*.swo
+
+# Backup and packaging
+*.jar
+*.war
+*.ear
+*.zip
+*.tar.gz
+
+# Spring Boot devtools restart cache
+.spring-boot-devtools.properties
+.spring-boot-devtools.json
+
+# Test reports
+/test-output/
+surefire-reports/
+jacoco.exec
