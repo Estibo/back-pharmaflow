@@ -1,33 +1,54 @@
-HELP.md
-target/
-!.mvn/wrapper/maven-wrapper.jar
-!**/src/main/**/target/
-!**/src/test/**/target/
+# Compiled class files
+*.class
 
-### STS ###
-.apt_generated
-.classpath
-.factorypath
-.project
-.settings
-.springBeans
-.sts4-cache
+# Maven target directory
+/target/
 
-### IntelliJ IDEA ###
-.idea
-*.iws
+# Build directories
+/build/
+/bin/
+
+# Log files
+*.log
+/logs/
+/*.log
+
+# IntelliJ IDEA
+.idea/
 *.iml
 *.ipr
+*.iws
+out/
 
-### NetBeans ###
-/nbproject/private/
-/nbbuild/
-/dist/
-/nbdist/
-/.nb-gradle/
-build/
-!**/src/main/**/build/
-!**/src/test/**/build/
-
-### VS Code ###
+# VS Code
 .vscode/
+.history/
+
+# OS-specific files
+.DS_Store
+Thumbs.db
+
+# Environment files
+.env
+
+# Temporary files
+*.tmp
+*.swp
+*.bak
+*.swo
+
+# Backup and packaging
+*.jar
+*.war
+*.ear
+*.zip
+*.tar.gz
+
+# Spring Boot devtools restart cache
+.spring-boot-devtools.properties
+.spring-boot-devtools.json
+
+# Test reports
+/test-output/
+surefire-reports/
+jacoco.exec
