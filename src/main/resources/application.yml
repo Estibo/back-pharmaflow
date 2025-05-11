@@ -1,0 +1,20 @@
+spring:
+  application:
+    name: BackPharmaFlow
+  datasource:
+    url: jdbc:sqlserver://localhost:1433;databaseName=pharmaflow_dd;encrypt=true;trustServerCertificate=true;
+    username: sa
+    password: Pharma12345*
+    driver-class-name: com.microsoft.sqlserver.jdbc.SQLServerDriver
+  jpa:
+    hibernate:
+      ddl-auto: update
+    show-sql: true
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.SQLServerDialect
+server:
+  port: 8080
+jwt:
+  secret: your_jwt_secret_key
+  expiration: 3600000
