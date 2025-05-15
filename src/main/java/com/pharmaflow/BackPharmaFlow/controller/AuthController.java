@@ -21,28 +21,58 @@ public class AuthController {
     private PasswordEncoder passwordEncoder;
 
     @Autowired
-    private JwtTokenProvider jwtTokenProvider;
-
-    @PostMapping("/login")
+    private JwtTokenProvider jwtTokenProvider;    @PostMapping("/login")
     public ResponseEntity<?> login(@RequestBody LoginRequest loginRequest) {
         Usuario usuario = usuarioRepository.findByCorreo(loginRequest.getCorreo())
                 .orElseThrow(() -> new RuntimeException("Usuario no encontrado"));
 
+        if (!usuario.getEstado()) {
+            return ResponseEntity.badRequest().body("Usuario inactivo");
+        }
+
+        if (usuario.getIntentosLogin() >= 3 && 
+            usuario.getUltimoIntentoFallido() != null && 
+            usuario.getUltimoIntentoFallido().plusMinutes(15).isAfter(java.time.LocalDateTime.now())) {
+            return ResponseEntity.badRequest().body("Cuenta bloqueada. Intente nuevamente en 15 minutos");
+        }
+
         if (!passwordEncoder.matches(loginRequest.getContrasena(), usuario.getContrasena())) {
+            usuario.setIntentosLogin(usuario.getIntentosLogin() + 1);
+            if (usuario.getIntentosLogin() >= 3) {
+                usuario.setUltimoIntentoFallido(java.time.LocalDateTime.now());
+            }
+            usuarioRepository.save(usuario);
             return ResponseEntity.badRequest().body("Credenciales inválidas");
         }
 
-        String token = jwtTokenProvider.createToken(usuario.getCorreo(), Collections.singletonList(usuario.getRol()));
-        return ResponseEntity.ok(new LoginResponse(token));
-    }
+        usuario.setIntentosLogin(0);
+        usuario.setUltimoIntentoFallido(null);
+        usuarioRepository.save(usuario);
 
-    @PostMapping("/register")
+        String token = jwtTokenProvider.createToken(usuario.getCorreo(), Collections.singletonList(usuario.getRol()));
+        return ResponseEntity.ok(new LoginResponse(token, usuario.getRol()));
+    }    @PostMapping("/register")
     public ResponseEntity<?> register(@RequestBody Usuario usuario) {
+        // Validar campos requeridos
+        if (usuario.getCedula() == null || usuario.getNombre() == null || usuario.getApellido() == null ||
+            usuario.getCorreo() == null || usuario.getContrasena() == null || usuario.getFechaNacimiento() == null ||
+            usuario.getCiudadNacimiento() == null || usuario.getCiudadResidencia() == null) {
+            return ResponseEntity.badRequest().body("Todos los campos son requeridos");
+        }
+
         if (usuarioRepository.findByCorreo(usuario.getCorreo()).isPresent()) {
             return ResponseEntity.badRequest().body("El correo ya está registrado");
         }
 
+        // Por defecto, asignar rol "Usuario" si no se especifica
+        if (usuario.getRol() == null) {
+            usuario.setRol("Usuario");
+        }
+
         usuario.setContrasena(passwordEncoder.encode(usuario.getContrasena()));
+        usuario.setEstado(true);
+        usuario.setIntentosLogin(0);
+        usuario.setFechaCreacion(java.time.LocalDateTime.now());
         usuarioRepository.save(usuario);
         return ResponseEntity.ok("Usuario registrado exitosamente");
     }
@@ -66,13 +96,21 @@ public class AuthController {
         public void setContrasena(String contrasena) {
             this.contrasena = contrasena;
         }
-    }
-
-    static class LoginResponse {
+    }    static class LoginResponse {
         private String token;
+        private String rol;
 
-        public LoginResponse(String token) {
+        public LoginResponse(String token, String rol) {
             this.token = token;
+            this.rol = rol;
+        }
+
+        public String getToken() {
+            return token;
+        }
+
+        public String getRol() {
+            return rol;
         }
 
         // Getter...

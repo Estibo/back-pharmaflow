@@ -18,31 +18,33 @@ public class UsuarioController {
     @GetMapping
     public List<Usuario> listarUsuarios() {
         return usuarioRepository.findAll();
-    }
-
-    @PutMapping("/{id}")
-    public ResponseEntity<?> actualizarUsuario(@PathVariable Integer id, @RequestBody Usuario usuario) {
-        Usuario existente = usuarioRepository.findById(id)
+    }    @PutMapping("/{cedula}")
+    public ResponseEntity<?> actualizarUsuario(@PathVariable String cedula, @RequestBody Usuario usuario) {
+        Usuario existente = usuarioRepository.findById(cedula)
                 .orElseThrow(() -> new RuntimeException("Usuario no encontrado"));
 
         existente.setNombre(usuario.getNombre());
+        existente.setApellido(usuario.getApellido());
         existente.setCorreo(usuario.getCorreo());
+        existente.setFechaNacimiento(usuario.getFechaNacimiento());
+        existente.setCiudadNacimiento(usuario.getCiudadNacimiento());
+        existente.setCiudadResidencia(usuario.getCiudadResidencia());
         existente.setRol(usuario.getRol());
+        existente.setCargo(usuario.getCargo());
+        existente.setArea(usuario.getArea());
         usuarioRepository.save(existente);
 
         return ResponseEntity.ok("Usuario actualizado exitosamente");
     }
 
-    @DeleteMapping("/{id}")
-    public ResponseEntity<?> eliminarUsuario(@PathVariable Integer id) {
-        Usuario usuario = usuarioRepository.findById(id)
+    @DeleteMapping("/{cedula}")
+    public ResponseEntity<?> eliminarUsuario(@PathVariable String cedula) {
+        Usuario usuario = usuarioRepository.findById(cedula)
                 .orElseThrow(() -> new RuntimeException("Usuario no encontrado"));
 
         if ("Administrador".equalsIgnoreCase(usuario.getRol())) {
             return ResponseEntity.badRequest().body("No se puede eliminar el rol Administrador");
-        }
-
-        usuarioRepository.deleteById(id);
+        }        usuarioRepository.deleteById(cedula);
         return ResponseEntity.ok("Usuario eliminado exitosamente");
     }
 }

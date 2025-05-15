@@ -13,13 +13,14 @@ import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
 @Configuration
-public class SecurityConfig {
-
-    @Bean
+public class SecurityConfig {    @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http.csrf().disable()
-            .authorizeHttpRequests()
-            .requestMatchers("/api/auth/**").permitAll() // Public endpoints for authentication
+            .cors().and() // Habilitar CORS
+            .authorizeHttpRequests()            .requestMatchers("/auth/**").permitAll() // Public endpoints for authentication
+            .requestMatchers("/api/auth/**").permitAll() // Public endpoints for authentication (alternative path)
+            .requestMatchers("/api/usuarios/**").permitAll() // Permitir registro de usuarios
+            .requestMatchers("/api/setup/**").permitAll() // Permitir endpoint de setup
             .anyRequest().authenticated() // All other endpoints require authentication
             .and()
             .addFilterBefore(jwtAuthenticationFilter(jwtTokenProvider()), UsernamePasswordAuthenticationFilter.class);
